@@ -33,7 +33,7 @@ class Opcode:
     value: str
 
 
-type Code = IntLit | StrLit | Nested | Opcode
+type Code = Nested | Opcode
 
 type PRes[T] = tuple[T, str]
 
@@ -82,13 +82,8 @@ def parse1(s: str) -> PRes[Code | Literal["\n"]]:
         debug_print(f"Nested @ {i}")
         r = parse(s[1:i])
         return (Nested(r), s[i:])
-    elif s[0] == "[":
-        i = get_match(s, "[", "]")
-        debug_print(f"String @ {i}")
-
-        r = StrLit(s[1:i])
         return (r, s[i:])
-    elif s[0] == "\n":
+    elif s[0] == "\n" or s[0] == "\\":
         debug_print("newline")
         return ("\n", s[1:])
     elif s[0].isspace():
